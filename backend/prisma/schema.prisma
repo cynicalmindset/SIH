@@ -21,10 +21,58 @@ model User {
   role         Role     @default(VIEWER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  spills SpillEvent[]
 }
 
 enum Role {
   ADMIN
   ANALYST
   VIEWER
+}
+
+model SpillEvent {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  latitude    Float
+  longitude   Float
+  detectedAt  DateTime
+  imageUrl    String?
+  areaKm2     Float?
+  confidence  Float?
+  status      SpillStatus @default(PENDING)
+
+  createdById String   @db.ObjectId
+  createdBy   User     @relation(fields: [createdById], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  analysis Analysis?
+}
+
+enum SpillStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Analysis {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  spillId   String     @unique @db.ObjectId
+  spill     SpillEvent @relation(fields: [spillId], references: [id])
+
+  status     AnalysisStatus @default(PENDING)
+  originLat  Float?
+  originLon  Float?
+  originTime DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AnalysisStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
 }

@@ -4,6 +4,7 @@ import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
 import spillRoutes from "./routes/spill.routes";
 import analysisRoutes from "./routes/analysis.routes";
+import redis from './config/redis.ts';
 
 
 
@@ -33,6 +34,22 @@ app.get("/health", async (req, res) => {
     res.status(500).json({
       status: "error",
       database: "disconnected",
+    });
+  }
+});
+
+app.get("/health/redis", async (req, res) => {
+  try {
+    await redis.ping();
+
+    res.json({
+      status: "ok",
+      redis: "connected",
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      redis: "disconnected",
     });
   }
 });

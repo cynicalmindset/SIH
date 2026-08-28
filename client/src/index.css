@@ -2905,11 +2905,11 @@ html, body {
    Reference-faithful composition — Planet color adaptation
    ============================================================ */
 
-/* ── Outer wrapper ── */
+/* ── Outer wrapper — white on both sides ── */
 .auth-page {
   min-height: 100vh;
   width: 100%;
-  background-color: #080e18;
+  background-color: #ffffff;
   display: flex;
   align-items: stretch;
   font-family: var(--font-family);
@@ -2917,14 +2917,12 @@ html, body {
   overflow: hidden;
 }
 
-/* Subtle overall background gradient — dark navy base */
+/* Outer background overlay — transparent (outer container is now white) */
 .auth-page::before {
   content: '';
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 10% 20%, rgba(10, 30, 70, 0.6) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 80% at 90% 80%, rgba(5, 20, 50, 0.5) 0%, transparent 70%);
+  background: transparent;
   pointer-events: none;
   z-index: 0;
 }

@@ -18,9 +18,7 @@ This system provides an automated pipeline to:
 - Forecast future spill movement
 - Estimate affected area after 6, 12 and 24 hours
 - Visualize the entire analysis through an interactive dashboard
-
 ---
-
 # System Flow
 
 ```text

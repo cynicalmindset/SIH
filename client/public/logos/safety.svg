@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" fill="none">
+  <path d="M20 10L28 14V22C28 26.5 24.5 30 20 31.5C15.5 30 12 26.5 12 22V14L20 10Z" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M20 17V24M17 20.5H23" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  <text x="36" y="25" fill="#ffffff" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="700" letter-spacing="1.5">MARITIME SAFETY</text>
+</svg>

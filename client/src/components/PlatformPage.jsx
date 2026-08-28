@@ -15,6 +15,7 @@ const services = [
   {
     number: '01',
     title: 'OIL SPILL DETECTION',
+    slug: 'oil-spill-detection',
     description: 'Detect and characterise potential oil slicks from satellite imagery.',
     image: '/platform/container1.png',
     icon: Droplets,
@@ -22,6 +23,7 @@ const services = [
   {
     number: '02',
     title: 'SATELLITE INTELLIGENCE',
+    slug: 'satellite-intelligence',
     description: 'Extract spatial intelligence from SAR and optical imagery.',
     image: '/platform/container2.png',
     icon: Satellite,
@@ -29,6 +31,7 @@ const services = [
   {
     number: '03',
     title: 'AIS INTELLIGENCE',
+    slug: 'ais-intelligence',
     description: 'Reconstruct vessel movements around an incident.',
     image: '/platform/container3.png',
     icon: Radio,
@@ -36,6 +39,7 @@ const services = [
   {
     number: '04',
     title: 'VESSEL CORRELATION',
+    slug: 'vessel-correlation',
     description: 'Match vessel trajectories with the probable spill origin.',
     image: '/platform/container4.png',
     icon: Compass,
@@ -43,6 +47,7 @@ const services = [
   {
     number: '05',
     title: 'OCEAN & WEATHER',
+    slug: 'ocean-and-weather',
     description: 'Use currents, wind and environmental data to trace slick movement.',
     image: '/platform/container5.png',
     icon: Wind,
@@ -50,6 +55,7 @@ const services = [
   {
     number: '06',
     title: 'INCIDENT ATTRIBUTION',
+    slug: 'incident-attribution',
     description: 'Rank potential vessels using spatial and temporal evidence.',
     image: '/platform/container6.png',
     icon: Target,
@@ -57,12 +63,20 @@ const services = [
 ];
 
 export default function PlatformPage({ onNavigate }) {
+  const handleCardClick = (slug) => {
+    if (onNavigate) {
+      onNavigate(`doc-${slug}`);
+    } else {
+      window.location.hash = `doc-${slug}`;
+    }
+  };
+
   return (
     <div className="platform-page-wrapper">
       {/* Top Header Wrapper with Navy Background & Background Image */}
       <div className="page-wrapper">
         <header className="platform-header-box">
-          <Navbar currentView="platform" onNavigate={onNavigate} />
+          <Navbar currentView="platform" theme="light" onNavigate={onNavigate} />
 
           {/* Platform Intro Header (Text Overlaying Background Image) */}
           <div className="platform-services-header">
@@ -84,7 +98,13 @@ export default function PlatformPage({ onNavigate }) {
             {services.map((item) => {
               const IconComponent = item.icon;
               return (
-                <div key={item.number} className="service-card">
+                <div
+                  key={item.number}
+                  className="service-card service-card--interactive"
+                  onClick={() => handleCardClick(item.slug)}
+                  role="button"
+                  tabIndex={0}
+                >
                   {/* Container Image Area */}
                   <div className="service-card-image-wrapper">
                     <div className="service-card-image-frame">
@@ -109,7 +129,7 @@ export default function PlatformPage({ onNavigate }) {
                     </div>
 
                     <div className="service-card-action">
-                      <span className="service-view-more">VIEW MORE</span>
+                      <span className="service-view-more">READ DOCUMENTATION</span>
                       <ArrowRight size={14} className="service-arrow-icon" />
                     </div>
                   </div>

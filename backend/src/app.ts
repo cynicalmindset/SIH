@@ -14,6 +14,7 @@ const app = express();
 // VITE_CLIENT_ORIGIN defaults to http://localhost:5173 for local development.
 const allowedOrigins = [
   process.env.CLIENT_ORIGIN ?? "http://localhost:5173",
+  "http://localhost:3000",
 ];
 
 app.use(

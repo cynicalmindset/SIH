@@ -4,7 +4,13 @@ import { CONTACT_EMAIL } from '../config';
 export default function Footer({ onNavigate }) {
   const handleNavClick = (e, target) => {
     if (onNavigate) {
-      if (target === 'home' || target === 'platform' || target === 'intelligence' || target === 'insights') {
+      if (
+        target === 'home' ||
+        target === 'platform' ||
+        target === 'intelligence' ||
+        target === 'insights' ||
+        target === 'contact'
+      ) {
         e.preventDefault();
         onNavigate(target);
       }
@@ -58,6 +64,14 @@ export default function Footer({ onNavigate }) {
                   Insights
                 </a>
               </li>
+              <li>
+                <a
+                  href="#contact"
+                  onClick={(e) => handleNavClick(e, 'contact')}
+                >
+                  Contact
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -65,7 +79,14 @@ export default function Footer({ onNavigate }) {
           <div className="footer-column">
             <span className="footer-col-title">Contact</span>
             <ul className="footer-links">
-              <li><a href="#contact">Get in Touch</a></li>
+              <li>
+                <a
+                  href="#contact"
+                  onClick={(e) => handleNavClick(e, 'contact')}
+                >
+                  Get in Touch
+                </a>
+              </li>
               <li><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
             </ul>
           </div>

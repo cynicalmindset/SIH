@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 40" fill="none">
+  <ellipse cx="20" cy="20" rx="10" ry="4" stroke="#ffffff" stroke-width="2" transform="rotate(-30 20 20)"/>
+  <ellipse cx="20" cy="20" rx="10" ry="4" stroke="#ffffff" stroke-width="2" transform="rotate(30 20 20)"/>
+  <circle cx="20" cy="20" r="2.5" fill="#ffffff"/>
+  <text x="38" y="25" fill="#ffffff" font-family="'Plus Jakarta Sans', sans-serif" font-size="13" font-weight="700" letter-spacing="1.5">OCEAN RES</text>
+</svg>

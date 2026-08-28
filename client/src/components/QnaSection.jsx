@@ -35,37 +35,46 @@ const faqs = [
   },
 ];
 
-export default function QnaSection() {
-  const [openId, setOpenId] = useState('faq-3');
+export default function QnaSection({ onNavigate }) {
+  const [openIndex, setOpenIndex] = useState(null);
 
-  const toggleFaq = (id) => {
-    setOpenId(openId === id ? null : id);
+  const toggleFaq = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const handleContactClick = (e) => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate('contact');
+    } else {
+      window.location.hash = 'contact';
+    }
   };
 
   return (
-    <section className="qna-section" id="faq">
+    <section className="qna-section-wrapper">
       <div className="qna-container">
-        {/* Section Heading */}
+        {/* Section Header */}
         <div className="qna-header">
+          <span className="qna-eyebrow-pill">FREQUENTLY ASKED QUESTIONS</span>
           <h2 className="qna-title">
-            Need help? <span className="qna-title-accent">We've got answers.</span>
+            Answers to your maritime intelligence questions.
           </h2>
         </div>
 
-        {/* Accordion Cards List */}
+        {/* FAQ Accordion List */}
         <div className="qna-accordion-list">
-          {faqs.map((faq) => {
-            const isOpen = openId === faq.id;
+          {faqData.map((faq, idx) => {
+            const isOpen = openIndex === idx;
             return (
               <div
                 key={faq.id}
-                className={`qna-card ${isOpen ? 'qna-card-open' : ''}`}
+                className={`qna-item ${isOpen ? 'qna-item-open' : ''}`}
               >
                 <button
-                  className="qna-card-header"
-                  onClick={() => toggleFaq(faq.id)}
-                  aria-expanded={isOpen}
                   type="button"
+                  className="qna-question-row"
+                  onClick={() => toggleFaq(idx)}
                 >
                   <span className="qna-question">{faq.question}</span>
                   <span className={`qna-icon-wrapper ${isOpen ? 'icon-rotated' : ''}`}>
@@ -85,7 +94,11 @@ export default function QnaSection() {
 
         {/* Bottom Action Pill */}
         <div className="qna-bottom-cta">
-          <a href={`mailto:${CONTACT_EMAIL}`} className="qna-view-all-btn">
+          <a
+            href="#contact"
+            className="qna-view-all-btn"
+            onClick={handleContactClick}
+          >
             Contact Team
           </a>
         </div>

@@ -55,7 +55,7 @@ const intelligenceModules = [
     id: 'mod-5',
     title: 'Spatial Proximity Analysis',
     description: 'Calculate exact distance-to-source metrics for candidate vessels.',
-    image: '/Intelligence/AISgapandanomaly.png',
+    image: '/Intelligence/Spatial Proximity Analysis.png',
     icon: Navigation,
     featured: false,
   },
@@ -63,7 +63,7 @@ const intelligenceModules = [
     id: 'mod-6',
     title: 'AIS Gap & Anomaly Detection',
     description: 'Highlight deliberate transponder dropouts in high-risk ocean zones.',
-    image: '/Intelligence/AISgapandanomaly.png',
+    image: '/Intelligence/AIS Gap & Anomaly Detection.png',
     icon: Radio,
     featured: false,
   },
@@ -180,17 +180,18 @@ export default function IntelligencePage({ onNavigate }) {
             </div>
 
             <div className="intel-why-split">
-              {/* Left Media Column with Image */}
+              {/* Left Media Column with Video */}
               <div className="intel-why-media-column">
                 <div className="intel-why-media-placeholder">
-                  <img
-                    src="/Intelligence/Intelligencehero.png"
-                    alt="Maritime Data Fusion"
+                  <video
                     className="intel-why-media-img"
+                    src="/Intelligence/video.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    aria-label="Maritime intelligence platform demonstration"
                   />
-                  <div className="intel-media-play-badge">
-                    <Play size={22} className="play-icon" />
-                  </div>
                 </div>
               </div>
 

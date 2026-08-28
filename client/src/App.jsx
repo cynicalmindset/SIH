@@ -11,23 +11,21 @@ import Footer from './components/Footer';
 import PlatformPage from './components/PlatformPage';
 import IntelligencePage from './components/IntelligencePage';
 import InsightsPage from './components/InsightsPage';
+import ContactPage from './components/ContactPage';
 import AuthPage from './components/AuthPage';
-import UnderDevelopment from './components/UnderDevelopment';
+import DashboardAdmin from './components/DashboardAdmin';
+import DashboardAnalyst from './components/DashboardAnalyst';
+import DashboardViewer from './components/DashboardViewer';
+import DocViewer from './components/DocViewer';
+import { authService } from './services/authService';
 
-// ─── Dashboard components (preserved, pending full implementation) ───────────
-// Reconnect these by replacing <UnderDevelopment /> below with the relevant
-// component once the workspace is ready to ship.
-// import DashboardAdmin   from './components/DashboardAdmin';
-// import DashboardAnalyst from './components/DashboardAnalyst';
-// import DashboardViewer  from './components/DashboardViewer';
-// ────────────────────────────────────────────────────────────────────────────
-
-// All valid hash views recognised by this router
+// All valid hash views recognized by this router
 const VIEWS = [
   'home',
   'platform',
   'intelligence',
   'insights',
+  'contact',
   'auth',
   'dashboard-admin',
   'dashboard-analyst',
@@ -36,25 +34,85 @@ const VIEWS = [
 
 function hashToView(hash) {
   const h = hash.replace('#', '');
-  return VIEWS.includes(h) ? h : 'home';
+  if (!h) return 'home';
+  if (h.startsWith('doc-')) return h;
+  if (VIEWS.includes(h)) return h;
+  // If hash is an unknown section anchor or sub-link, return null to preserve current view
+  return null;
 }
 
 export default function App() {
   const [currentView, setCurrentView] = useState(() =>
-    hashToView(window.location.hash)
+    hashToView(window.location.hash) || 'home'
   );
 
+  // Authenticated state check
+  const [isAuthenticated, setIsAuthenticated] = useState(() => authService.isAuthenticated());
+
   useEffect(() => {
+    // Validate session on mount
+    authService.validateSession().then((valid) => {
+      setIsAuthenticated(valid);
+    });
+
     const handleHashChange = () => {
       const view = hashToView(window.location.hash);
+      if (view === null) {
+        // Preserve current view for section anchors or in-page scrolling
+        return;
+      }
+
+      const isAuth = authService.isAuthenticated();
+      setIsAuthenticated(isAuth);
+
+      // Guard: If authenticated and trying to visit #auth, redirect to role dashboard
+      if (view === 'auth' && isAuth) {
+        const role = authService.getUserRole();
+        const targetDashboard =
+          role === 'ADMIN'
+            ? 'dashboard-admin'
+            : role === 'VIEWER'
+            ? 'dashboard-viewer'
+            : 'dashboard-analyst';
+        setCurrentView(targetDashboard);
+        window.location.hash = targetDashboard;
+        return;
+      }
+
+      // Guard: If visiting dashboard routes without authentication, redirect to #auth
+      if (view.startsWith('dashboard-') && !isAuth) {
+        setCurrentView('auth');
+        window.location.hash = 'auth';
+        return;
+      }
+
       setCurrentView(view);
       window.scrollTo(0, 0);
     };
+
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   const handleNavigate = (view) => {
+    const isAuth = authService.isAuthenticated();
+    setIsAuthenticated(isAuth);
+
+    // Guard: Prevent going backward to login if already authenticated
+    if (view === 'auth' && isAuth) {
+      const role = authService.getUserRole();
+      const targetDashboard =
+        role === 'ADMIN'
+          ? 'dashboard-admin'
+          : role === 'VIEWER'
+          ? 'dashboard-viewer'
+          : 'dashboard-analyst';
+      setCurrentView(targetDashboard);
+      window.location.hash = targetDashboard;
+      window.scrollTo(0, 0);
+      return;
+    }
+
     setCurrentView(view);
     window.location.hash = view === 'home' ? '' : view;
     window.scrollTo(0, 0);
@@ -62,23 +120,33 @@ export default function App() {
 
   // ── Auth ──────────────────────────────────────────────────────────────────
   if (currentView === 'auth') {
+    // If authenticated, do not show login; render role dashboard directly
+    if (isAuthenticated) {
+      const role = authService.getUserRole();
+      if (role === 'ADMIN') return <DashboardAdmin onNavigate={handleNavigate} />;
+      if (role === 'VIEWER') return <DashboardViewer onNavigate={handleNavigate} />;
+      return <DashboardAnalyst onNavigate={handleNavigate} />;
+    }
     return <AuthPage onNavigate={handleNavigate} />;
   }
 
-  // ── Dashboard routes — temporarily showing UnderDevelopment ───────────────
-  // TODO: Replace <UnderDevelopment /> with the role-specific component
-  //       (DashboardAdmin / DashboardAnalyst / DashboardViewer) once the
-  //       workspace implementation is complete.
+  // ── Dashboard routes ──────────────────────────────────────────────────────
   if (currentView === 'dashboard-admin') {
-    return <UnderDevelopment onNavigate={handleNavigate} />;   // was: <DashboardAdmin />
+    return <DashboardAdmin onNavigate={handleNavigate} />;
   }
 
   if (currentView === 'dashboard-analyst') {
-    return <UnderDevelopment onNavigate={handleNavigate} />;   // was: <DashboardAnalyst />
+    return <DashboardAnalyst onNavigate={handleNavigate} />;
   }
 
   if (currentView === 'dashboard-viewer') {
-    return <UnderDevelopment onNavigate={handleNavigate} />;   // was: <DashboardViewer />
+    return <DashboardViewer onNavigate={handleNavigate} />;
+  }
+
+  // ── Documentation routes ──────────────────────────────────────────────────
+  if (currentView.startsWith('doc-')) {
+    const slug = currentView.replace('doc-', '');
+    return <DocViewer docSlug={slug} onNavigate={handleNavigate} />;
   }
 
   // ── Marketing pages ───────────────────────────────────────────────────────
@@ -94,6 +162,10 @@ export default function App() {
     return <InsightsPage onNavigate={handleNavigate} />;
   }
 
+  if (currentView === 'contact') {
+    return <ContactPage onNavigate={handleNavigate} />;
+  }
+
   // ── Homepage (default) ────────────────────────────────────────────────────
   return (
     <main>
@@ -103,7 +175,7 @@ export default function App() {
       <ImpactSection />
       <EditorialTypographySection />
       <FeaturePanelSection />
-      <QnaSection />
+      <QnaSection onNavigate={handleNavigate} />
       <CtaSection />
       <Footer onNavigate={handleNavigate} />
     </main>
